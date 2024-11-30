@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guará - Portal do Líder Comunitário</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #455d4f;
+            --secondary-color: #cfcdc1;
+            --accent-color: #279d47;
+            --dark-accent: #3c2811;
+            --text-dark: #25250f;
+            --background-light: #fbfdf6;
+            --danger-color: #f5240c;
+            --warning-color: #ffd700;
+            --success-color: #28a745;
+            --gradient-primary: linear-gradient(150deg, #455d4f, #279d47);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--secondary-color);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+
+        .sidebar {
+            background: var(--gradient-primary);
+            padding: 2rem;
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 75px;
+            height: auto;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+ 
+        .main-content {
+            padding: 2rem;
+            background: var(--background-light);
+        }
+
+        .community-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .action-content {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .communication-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+        }
+
+        .send-button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: var(--primary-color);
+        }
+
+        .event-timeline {
+            margin-top: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .community-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="../frontend/img/Lobo Guardiao.web" alt="Logo">
+                <span>Líder Comunitário</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Comunidade
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-bullhorn"></i>
+                        Comunicados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        Eventos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        Relatórios
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Ong Lobo Guardiao</h1>
+                <div class="user-profile">
+                    <div class="user-avatar"></div>
+                    <span>João Silva - Setor Central</span>
+                </div>
+            </div>
+
+            <div class="community-stats">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-2x"></i>
+                    <div class="stat-number">1,250</div>
+                    <div class="stat-label">Membros da Comunidade</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check fa-2x"></i>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Ações em Andamento</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Alertas Ativos</div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Mapa da Comunidade</h3>
+                </div>
+                <div id="communityMap" style="height: 400px; border-radius: 15px;"></div>
+            </div>
+
+            <div class="community-actions">
+                <div class="action-card">
+                    <div class="action-header">
+                        <h3>Campanha de Conscientização</h3>
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="action-content">
+                        <p>Campanha sobre prevenção de enchentes</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <p>75% concluído</p>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-header">
+                        <h3>Mutirão de Limpeza</h3>
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <div class="action-content">
+                        <p>Limpeza dos pontos críticos</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                        <p>40% concluído</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="communication-panel">
+                <h3><i class="fas fa-comment-alt"></i> Comunicação com a Comunidade</h3>
+                <div class="message-form">
+                    <textarea class="message-input" placeholder="Digite sua mensagem para a comunidade..."></textarea>
+                    <button class="send-button">
+                        <i class="fas fa-paper-plane"></i> Enviar
+                    </button>
+                </div>
+            </div>
+
+            <div class="event-timeline">
+                <h3>Linha do Tempo de Eventos</h3>
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h4>Reunião Comunitária</h4>
+                        <p>Discussão sobre medidas preventivas para a época de chuvas</p>
+                        <span class="timeline-date">Hoje, 14:00</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h4>Treinamento de Voluntários</h4>
+                        <p>Capacitação para situações de emergência</p>
+                        <span class="timeline-date">Amanhã, 09:00</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+      
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        
+        const communityMap = L.map('communityMap').setView([-16.8297, -49.2447], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(communityMap);
+
+        const communityPoints = [
+            {
+                coords: [-16.8245, -49.2438],
+                name: "Centro Comunitário",
+                type: "center"
+            },
+            {
+                coords: [-16.8156, -49.2566],
+                name: "Ponto de Encontro",
+                type: "meeting"
+            },
+            {
+                coords: [-16.8367, -49.2345],
+                name: "Área de Risco",
+                type: "risk"
+            }
+        ];
+
+        communityPoints.forEach(point => {
+            const icon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<i class="fas fa-${point.type === 'center' ? 'home' : 
+                                        point.type === 'meeting' ? 'users' : 
+                                        'exclamation-triangle'}" style="color: ${
+                                        point.type === 'center' ? '#28a745' :
+                                        point.type === 'meeting' ? '#007bff' :
+                                        '#dc3545'}"></i>`,
+                iconSize: [30, 30]
+            });
+
+            L.marker(point.coords, {icon: icon})
+             .bindPopup(`<strong>${point.name}</strong>`)
+             .addTo(communityMap);
+        });
+
+      
+        setInterval(() => {
+            
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const newProgress = Math.min(100, parseInt(bar.style.width) + Math.random() * 10);
+                bar.style.width = `${newProgress}%`;
+            });
+        }, 5000);
+
+        document.querySelector('.send-button').addEventListener('click', () => {
+            const input = document.querySelector('.message-input');
+            if (input.value.trim()) {
+                alert('Mensagem enviada para a comunidade!');
+                input.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
