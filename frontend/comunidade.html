@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guará - Portal do Cidadão</title>
 
-    <!-- Libraries -->
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-    /* Root Variables for Consistency */
+   
     :root {
         --primary-color: #455d4f;
         --secondary-color: #cfcdc1;
@@ -28,7 +28,7 @@
         --gradient-primary: linear-gradient(150deg, #455d4f, #279d47);
     }
     
-    /* General Reset */
+   
     * {
         margin: 0;
         padding: 0;
@@ -47,7 +47,7 @@
         min-height: 100vh;
       }
 
-      /* Sidebar Styles */
+    
       .sidebar {
         background: var(--gradient-primary);
         padding: 2rem;
@@ -96,7 +96,7 @@
         width: 20px;
       }
     
-    /* Citizen-Specific Widgets */
+    
     .weather-widget,
     .emergency-contacts,
     .safety-tips,
@@ -119,7 +119,7 @@
         gap: 1rem;
     }
     
-    /* Contact Item Layout */
+   
     .contact-item {
         display: flex;
         align-items: center;
@@ -128,7 +128,7 @@
         border-bottom: 1px solid #eee;
     }
     
-    /* Tip Card */
+  
     .tip-card {
         background: var(--background-light);
         padding: 1rem;
@@ -137,7 +137,7 @@
         border-left: 4px solid var(--accent-color);
     }
     
-    /* Notification Panel */
+    
     .notification-panel {
         position: fixed;
         bottom: 20px;
@@ -149,7 +149,7 @@
         display: none;
     }
     
-    /* Weather Details Grid */
+ 
     .weather-details {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -164,7 +164,7 @@
         border-radius: 8px;
     }
     
-    /* Educational Resources Grid */
+  
     .educational-resources {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -183,7 +183,7 @@
         transform: translateY(-5px);
     }
     
-    /* Responsive Design */
+   
     @media (max-width: 768px) {
         .dashboard-container {
             grid-template-columns: 1fr;
@@ -326,17 +326,17 @@
     </div>
 
     <script>
-        // Initialize AOS
+   
         AOS.init({
             duration: 1000,
             once: true
         });
 
-        // Initialize Risk Map
+       
         const riskMap = L.map('riskMap').setView([-16.8297, -49.2447], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(riskMap);
 
-        // Add risk areas
+        
         const riskAreas = [
             {
                 coords: [-16.8245, -49.2438],
@@ -367,7 +367,7 @@
             }).bindPopup(area.description).addTo(riskMap);
         });
 
-        // Simulate weather updates
+       
         setInterval(() => {
             const temperature = 25 + Math.random() * 5;
             const humidity = 70 + Math.random() * 10;
